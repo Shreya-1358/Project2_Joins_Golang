@@ -47,6 +47,17 @@ func (studcont *StudentController) GetStudentById(c *gin.Context) {
 		c.JSON(http.StatusOK, student)
 	}
 }
+func (studcont *StudentController) GetStudentByCourseId(c *gin.Context) {
+	id := c.Param("id")
+
+	student, err := studcont.studentservice.GetStudentByCourseId(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+
+	} else {
+		c.JSON(http.StatusOK, student)
+	}
+}
 func (studcont *StudentController) CreateStudent(c *gin.Context) {
 	var student model.Student
 

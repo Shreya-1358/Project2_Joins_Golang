@@ -29,5 +29,4 @@ type StudentResponse struct {
 	Dept      string `json:"dept"`
 	DOB       string `json:"dob"`
 	PhoneNo   string `json:"phoneno"`
-	Course    Course `json:"course"`
 }
