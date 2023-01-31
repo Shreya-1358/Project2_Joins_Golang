@@ -17,7 +17,6 @@ type Course struct {
 }
 
 type Enrollment struct {
-	Id        int `json:"id"`
 	StudentID int `json:"stuid"`
 	CourseID  int `json:"courid"`
 }
