@@ -3,7 +3,6 @@ package dao
 import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/google/uuid"
 	"log"
 	"project_2/config"
 	model "project_2/model"
@@ -164,8 +163,6 @@ func (studdao *StudentDaoImpl) CreateStudent(student *model.Student) (err error)
 		return err
 	}
 	for _, course := range courses {
-		Id := uuid.New()
-		fmt.Print(Id)
 		if err != nil {
 
 			return err
@@ -175,7 +172,7 @@ func (studdao *StudentDaoImpl) CreateStudent(student *model.Student) (err error)
 
 			return err
 		}
-		_, err = tx.Exec("INSERT INTO Student.enrollment(Id,studentID,courseID)VALUES(?,?,?)", Id, student.StudentID, course.CourseID)
+		_, err = tx.Exec("INSERT INTO Student.enrollment(studentID,courseID)VALUES(?,?)", student.StudentID, course.CourseID)
 		if err != nil {
 
 			return err
