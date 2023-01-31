@@ -15,11 +15,10 @@ func SetupRouter() *gin.Engine {
 
 	r := gin.Default()
 
-	r.GET("Students", studContoller.GetStudents)
-	r.GET("Student", studContoller.GetStudentsWithCourses)
-	r.GET("Student/:id", studContoller.GetStudentById)
-	r.GET("Students/:id", studContoller.GetStudentByCourseId)
-	r.POST("Student", studContoller.CreateStudent)
+	r.GET("students", studContoller.GetAllStudents)
+	r.GET("student/:id", studContoller.GetStudentById)
+	r.GET("course/:id", studContoller.GetStudentByCourseId)
+	r.POST("student", studContoller.CreateStudent)
 
 	return r
 }

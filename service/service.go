@@ -6,8 +6,7 @@ import (
 )
 
 type StudentService interface {
-	GetAllStudent() ([]*model.Student, error)
-	GetStudentsWithCourses() ([]*model.Student, error)
+	GetAllStudents() ([]*model.Student, error)
 	GetStudentById(string) ([]*model.Student, error)
 	GetStudentByCourseId(string) ([]*model.Student, error)
 	CreateStudent(*model.Student) error
@@ -21,17 +20,9 @@ func NewStudentServiceImpl(dao dao.StudentDao) StudentService {
 	return &StudentServiceImpl{studdao: dao}
 }
 
-func (studsvc *StudentServiceImpl) GetAllStudent() ([]*model.Student, error) {
+func (studsvc *StudentServiceImpl) GetAllStudents() ([]*model.Student, error) {
 
 	studentlist, err := studsvc.studdao.GetAllStudents()
-	if err != nil {
-		return nil, err
-	}
-	return studentlist, nil
-}
-func (studsvc *StudentServiceImpl) GetStudentsWithCourses() ([]*model.Student, error) {
-
-	studentlist, err := studsvc.studdao.GetStudentsWithCourses()
 	if err != nil {
 		return nil, err
 	}
