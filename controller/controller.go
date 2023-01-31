@@ -16,19 +16,9 @@ func NewStudentController(studsvc service.StudentService) *StudentController {
 	return &StudentController{studentservice: studsvc}
 }
 
-func (studcont *StudentController) GetStudents(c *gin.Context) {
+func (studcont *StudentController) GetAllStudents(c *gin.Context) {
 
-	student, err := studcont.studentservice.GetAllStudent()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-
-	} else {
-		c.JSON(http.StatusOK, student)
-	}
-}
-func (studcont *StudentController) GetStudentsWithCourses(c *gin.Context) {
-
-	student, err := studcont.studentservice.GetStudentsWithCourses()
+	student, err := studcont.studentservice.GetAllStudents()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 

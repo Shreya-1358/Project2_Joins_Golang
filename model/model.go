@@ -7,13 +7,13 @@ type Student struct {
 	Dept      string   `json:"dept"`
 	DOB       string   `json:"dob"`
 	PhoneNo   string   `json:"phoneno"`
-	Course    []Course `json:"course"`
+	Course    []Course `json:"course,omitempty"`
 }
 
 type Course struct {
-	CourseID   int    `json:"courid"`
-	CourseName string `json:"couname"`
-	CourseFee  string `json:"courfee"`
+	CourseID   int    `json:"courid,omitempty"`
+	CourseName string `json:"couname,omitempty"`
+	CourseFee  string `json:"courfee,omitempty"`
 }
 
 type Enrollment struct {

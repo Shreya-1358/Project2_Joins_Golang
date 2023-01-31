@@ -12,7 +12,6 @@ import (
 
 type StudentDao interface {
 	GetAllStudents() ([]*model.Student, error)
-	GetStudentsWithCourses() ([]*model.Student, error)
 	CreateStudent(*model.Student) error
 	GetStudentById(string) ([]*model.Student, error)
 	GetStudentByCourseId(string) ([]*model.Student, error)
@@ -30,7 +29,7 @@ func (studdao *StudentDaoImpl) GetAllStudents() ([]*model.Student, error) {
 	courmap := make(map[int][]model.Course)
 
 	var studentlist []*model.Student
-	rows, err := config.DB.Query("SELECT Student.student.studentID,Name,Email,Dept,DOB,PhoneNo,COALESCE(Student.course.courseID,-1),COALESCE(courseName,''),COALESCE(courseFee,-1) FROM Student.student left join Student.enrollment on Student.student.studentID = Student.enrollment.studentID  left join Student.course on Student.enrollment.courseID = Student.course.courseID")
+	rows, err := config.DB.Query("SELECT Student.student.studentID,Name,Email,Dept,DOB,PhoneNo,Student.course.courseID,courseName,courseFee FROM Student.student left join Student.enrollment on Student.student.studentID = Student.enrollment.studentID  left join Student.course on Student.enrollment.courseID = Student.course.courseID")
 
 	if err != nil {
 		log.Print(err)
@@ -39,47 +38,18 @@ func (studdao *StudentDaoImpl) GetAllStudents() ([]*model.Student, error) {
 	for rows.Next() {
 		var stud model.StudentResponse
 		var cour model.Course
+		var courseID *int
+		var courseName *string
+		var courseFee *string
 
-		err = rows.Scan(&stud.StudentID, &stud.Name, &stud.Email, &stud.Dept, &stud.DOB, &stud.PhoneNo, &cour.CourseID, &cour.CourseName, &cour.CourseFee)
+		err = rows.Scan(&stud.StudentID, &stud.Name, &stud.Email, &stud.Dept, &stud.DOB, &stud.PhoneNo, &courseID, &courseName, &courseFee)
 		if err != nil {
 			return nil, err
 		} else {
-			if cour.CourseID != -1 {
-				courmap[stud.StudentID] = append(courmap[stud.StudentID], cour)
-			}
-
-			studmap[stud.StudentID] = stud
-
-		}
-	}
-	for i, j := range studmap {
-		studentlist = append(studentlist, &model.Student{
-			StudentID: j.StudentID, Name: j.Name, Email: j.Email, Dept: j.Dept, DOB: j.DOB, PhoneNo: j.PhoneNo, Course: courmap[i],
-		})
-	}
-	return studentlist, nil
-
-}
-func (studdao *StudentDaoImpl) GetStudentsWithCourses() ([]*model.Student, error) {
-	studmap := make(map[int]model.StudentResponse)
-	courmap := make(map[int][]model.Course)
-
-	var studentlist []*model.Student
-	rows, err := config.DB.Query("SELECT Student.student.studentID,Name,Email,Dept,DOB,PhoneNo,Student.course.courseID,courseName,courseFee FROM Student.student  join Student.enrollment on Student.student.studentID = Student.enrollment.studentID   join Student.course on Student.enrollment.courseID = Student.course.courseID")
-
-	if err != nil {
-		log.Print(err)
-	}
-
-	for rows.Next() {
-		var stud model.StudentResponse
-		var cour model.Course
-
-		err = rows.Scan(&stud.StudentID, &stud.Name, &stud.Email, &stud.Dept, &stud.DOB, &stud.PhoneNo, &cour.CourseID, &cour.CourseName, &cour.CourseFee)
-		if err != nil {
-			return nil, err
-		} else {
-			if cour.CourseID != -1 {
+			if courseID != nil {
+				cour.CourseID = *courseID
+				cour.CourseName = *courseName
+				cour.CourseFee = *courseFee
 				courmap[stud.StudentID] = append(courmap[stud.StudentID], cour)
 			}
 			studmap[stud.StudentID] = stud
@@ -98,7 +68,7 @@ func (studdao *StudentDaoImpl) GetStudentById(id string) ([]*model.Student, erro
 	courmap := make(map[int][]model.Course)
 
 	var studentlist []*model.Student = []*model.Student{}
-	rows, err := config.DB.Query("SELECT Student.student.studentID,Name,Email,Dept,DOB,PhoneNo,COALESCE(Student.course.courseID,-1),COALESCE(courseName,''),COALESCE(courseFee,-1) FROM Student.student  left join Student.enrollment on Student.student.StudentID = Student.enrollment.studentID left  join Student.course on Student.enrollment.courseID = Student.course.courseID where Student.student.studentID =?", id)
+	rows, err := config.DB.Query("SELECT Student.student.studentID,Name,Email,Dept,DOB,PhoneNo,Student.course.courseID,courseName,courseFee FROM Student.student  left join Student.enrollment on Student.student.StudentID = Student.enrollment.studentID left  join Student.course on Student.enrollment.courseID = Student.course.courseID where Student.student.studentID =?", id)
 
 	if err != nil {
 		log.Print(err)
@@ -107,12 +77,18 @@ func (studdao *StudentDaoImpl) GetStudentById(id string) ([]*model.Student, erro
 	for rows.Next() {
 		var stud model.StudentResponse
 		var cour model.Course
+		var courseID *int
+		var courseName *string
+		var courseFee *string
 
-		err = rows.Scan(&stud.StudentID, &stud.Name, &stud.Email, &stud.Dept, &stud.DOB, &stud.PhoneNo, &cour.CourseID, &cour.CourseName, &cour.CourseFee)
+		err = rows.Scan(&stud.StudentID, &stud.Name, &stud.Email, &stud.Dept, &stud.DOB, &stud.PhoneNo, &courseID, &courseName, &courseFee)
 		if err != nil {
 			return nil, err
 		} else {
-			if cour.CourseID != -1 {
+			if courseID != nil {
+				cour.CourseID = *courseID
+				cour.CourseName = *courseName
+				cour.CourseFee = *courseFee
 				courmap[stud.StudentID] = append(courmap[stud.StudentID], cour)
 			}
 			studmap[stud.StudentID] = stud
@@ -130,7 +106,7 @@ func (studdao *StudentDaoImpl) GetStudentByCourseId(id string) ([]*model.Student
 	courmap := make(map[int][]model.Course)
 
 	var studentlist []*model.Student = []*model.Student{}
-	rows, err := config.DB.Query("SELECT Student.student.studentID,Name,Email,Dept,DOB,PhoneNo,COALESCE(Student.course.courseID,-1),COALESCE(courseName,''),COALESCE(courseFee,-1) FROM Student.student  left join Student.enrollment on Student.student.StudentID = Student.enrollment.studentID left  join Student.course on Student.enrollment.courseID = Student.course.courseID where Student.course.courseID =?", id)
+	rows, err := config.DB.Query("SELECT Student.student.studentID,Name,Email,Dept,DOB,PhoneNo,Student.course.courseID,courseName,courseFee FROM Student.student  left join Student.enrollment on Student.student.StudentID = Student.enrollment.studentID left  join Student.course on Student.enrollment.courseID = Student.course.courseID where Student.course.courseID =?", id)
 
 	if err != nil {
 		log.Print(err)
@@ -139,12 +115,18 @@ func (studdao *StudentDaoImpl) GetStudentByCourseId(id string) ([]*model.Student
 	for rows.Next() {
 		var stud model.StudentResponse
 		var cour model.Course
+		var courseID *int
+		var courseName *string
+		var courseFee *string
 
-		err = rows.Scan(&stud.StudentID, &stud.Name, &stud.Email, &stud.Dept, &stud.DOB, &stud.PhoneNo, &cour.CourseID, &cour.CourseName, &cour.CourseFee)
+		err = rows.Scan(&stud.StudentID, &stud.Name, &stud.Email, &stud.Dept, &stud.DOB, &stud.PhoneNo, &courseID, &courseName, &courseFee)
 		if err != nil {
 			return nil, err
 		} else {
-			if cour.CourseID != -1 {
+			if courseID != nil {
+				cour.CourseID = *courseID
+				cour.CourseName = *courseName
+				cour.CourseFee = *courseFee
 				courmap[stud.StudentID] = append(courmap[stud.StudentID], cour)
 			}
 			studmap[stud.StudentID] = stud
