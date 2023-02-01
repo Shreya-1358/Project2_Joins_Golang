@@ -1,8 +1,19 @@
-Aim :- Creating an API to join a student and course table using MySql in golang.
+Creating an API to join a student and course table using MySql in golang.
 
-Task :- Firstly storing the data in MySql database. I have a database configuration, util, model, routes, controller, service, dao and main file.
+Steps to follow:-
 
-Process :-
+Prerequisites:-
+Install go1.19:
+To avoid any surprises in the project install go 1.19, please use the commands below to install go 1.19 in your machine:
+go install golang.org/dl/go1.19@latest
+go1.19 download
+
+Clone the project and install the dependencies:
+Clone the project from Github and then run the following command to install dependencies.
+go get
+
+Project Outline :-
+Firstly storing the data in MySql database. I have a database configuration, util, model, routes, controller, service, dao and main file.
 
 config:- This package contains a variable DB of type pointer to sql.DB, which is a database connection handle. 
 It also defines a function DbURL() which returns a string that represents a database URL built from environment variables.
