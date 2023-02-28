@@ -1,4 +1,4 @@
-# Creating an API to join a student and course table using Golang, Gin and MySql.
+# Enrollment of students for courses using Golang, Gin and MySql.
 
 ## Steps to follow:-
 
