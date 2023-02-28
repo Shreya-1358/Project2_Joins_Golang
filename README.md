@@ -17,7 +17,7 @@ $ go1.19 download
 Clone the project from Github using the following command:
 
 ```javascript
-$ gti clone git@github.com:Shreya-1358/Project2_Joins_Golang.git
+$ git clone git@github.com:Shreya-1358/Project2_Joins_Golang.git
 ```
 
 Next run the following command to install dependencies.
